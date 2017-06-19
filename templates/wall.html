@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>The Wall</title>
+        <style>
+            /* CSS Reset Setting Here */
+            *{
+                margin: 0px;
+                padding: 0px;
+            }
+            body{
+                background-color: #c3a783;
+            }
+            .wrapper{
+                width: 1000px;
+                height: 1500px;
+                margin-left: auto;
+                margin-right: auto;
+                background-color: #d4e2e2;
+                border:5px solid #23352a;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            .header{
+                height: 100px;
+                border-bottom: 5px solid #71926a;
+                display: flex;
+            }
+            .header h1{
+                margin-left: 10px;
+                margin-top: 20px;
+                font-family: Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
+            }
+            .header h3{
+                margin-top: 33px;
+                margin-left: 600px;
+            }
+            .header a{
+                margin-top: 35px;
+                margin-left: 30px;
+            }
+            .message {
+                width: 600px;
+                height: 200px;
+                border: 5px solid #71926a;
+                text-align: center;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 30px;
+            }
+            .profile{
+                border: 2px dashed #71926a;
+                width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 20px;
+            }
+            .profilemessage{
+                margin-left: 20px;
+                margin-top: 20px;
+            }
+            .deletemessage{
+                position: relative;
+                left: 600px;
+                bottom: 15px;
+            }
+            .deletecomment{
+                position: relative;
+                left: 600px;
+                bottom: 15px;
+            }
+            .submessage{
+                margin-left: 40px;
+                height: 30px;
+                width: 400px;
+                font-style: italic;
+                font-size: 24px;
+            }
+            .commentform{
+                margin-left: 5px;
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+            .postcomment{
+                background-color: #23352a;
+                color: white;
+                border-radius: 10px;
+                text-align: center;
+                width: 100px;
+                height: 30px;
+                margin-top: 10px;
+            }
+            .commentbox{
+                margin-top: 10px;
+                margin-left: 60px;
+            }
+            .comment{
+                margin-top: 10px;
+                margin-left: 80px;
+            }
+            
+
+
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="header">
+                <h1>The Wall</h1>
+                <h3>Welcome {{ greeting }}</h3>
+                <a href="/logout">log off</a>
+            </div>
+            <div class="message">
+                <h2>Post a Message</h2>
+                <form action="/add_message", method='post'>
+                <textarea name="message" id="message" cols="80" rows="10"></textarea>
+                <br>
+                <input type="submit" name="message" value="Post a Messsage">
+                </form>
+            </div>
+            <div class="profile">
+            
+            {% if messages %}
+				{% for message in messages %}
+					<h5 class = 'profilemessage'>{{message['first_name']}} {{message['last_name']}} - {{message['created_at'].strftime("%B %d, %Y")}}</h5>
+					{% if message['user_id'] == session['user_id'] %}
+						<a href = "/delete/{{message['id']}}" class = 'deletemessage'>Delete</a>
+					{% endif %}
+					<p class = 'submessage'>{{message['message']}}</p>
+					{% for comment in comments %}
+						{% if comment['message_id'] == message['id'] %}
+							<h5 class = 'commentbox'>{{comment['first_name']}} {{comment['last_name']}} - {{comment['created_at'].strftime("%B %d, %Y")}}</h5>
+							{% if comment['user_id'] == session['user_id'] %}
+								<a href = "/delete/add_comment/{{comment['comment_id']}}" class = 'deletecomment'>Delete</a>
+							{% endif %}
+							<p class = 'comment'>{{comment['comment']}}</p>
+						{% endif %}
+					{% endfor %}
+					<form action = "/add_comment/{{message_id}}" method = 'post' class = 'commentform'>
+						<label>Post a comment:</label>
+						<input class = 'form-control' type = 'textarea' name = 'commentarea' required>
+						<input class = 'postcomment' type = 'submit' value = 'Post comment'>
+					</form>
+				{% endfor %}
+			{% endif %}
+             </div>
+        </div>
+    </body>
+</html>
